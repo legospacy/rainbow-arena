@@ -11,4 +11,4 @@ Rainbow Arena runs on LÖVE 11.3. It has some dependencies as Git submodules.
 
 ## License
 - The code is under the MIT license (see `LICENSE-MIT`).
-- Sounds, music, and graphics are under the Creative Commons CC-BY 4.0 license (see `LICENSE-CC-BY-4.0`)
+- Sounds, music, and graphics are under the Creative Commons CC-BY 4.0 license (see `LICENSE-CC-BY-4.0`).
