@@ -1,8 +1,3 @@
--- Setup require to be able to load MoonScript files.
-package.path = package.path .. ";lib/moonscript/?.lua"
-require("moonscript")
-
-
 function love.conf(t)
     t.identity = "rainbow-arena"
     t.appendidentity = false
