@@ -15,8 +15,9 @@ love.load = ->
 
 
 love.update = (dt) ->
-
+    print dt
 
 love.draw = ->
     love.graphics.setColor 1, 1, 1
     love.graphics.circle "line", 300, 300, 30
+    love.graphics.print "Potato", 100, 100
