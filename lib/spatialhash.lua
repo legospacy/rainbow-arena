@@ -1,23 +1,24 @@
--- Spatial hash implementation
-
+-- Spatial hash implementation.
+--
 -- Reference:
 -- http://www.gamedev.net/page/resources/_/technical/game-programming/spatial-hashing-r2697
+--
+-- Most logic from HC's spatial hash module:
+-- https://github.com/vrld/HC/blob/master/spatialhash.lua
 
--- Most logic taken from HardonCollider's spatial hash module:
--- https://github.com/vrld/HardonCollider/blob/master/spatialhash.lua
 
-local spatialhash = {}
-spatialhash.__index = spatialhash
+-- Module declaration --
+local SpatialHash = {}
+SpatialHash.__index = SpatialHash
 
-local floor = math.floor
 
----
-
-function spatialhash:hash(x, y)
-    return floor(x / self.cell_size), floor(y / self.cell_size)
+-- Methods --
+function SpatialHash:hash(x, y)
+    return math.floor(x / self.cell_size), math.floor(y / self.cell_size)
 end
 
-function spatialhash:get_cell(x, y)
+
+function SpatialHash:get_cell(x, y)
     local row = rawget(self.cells, x)
     if not row then
         row = {}
@@ -33,17 +34,17 @@ function spatialhash:get_cell(x, y)
     return cell
 end
 
----
 
-function spatialhash:get_cell_containing_point(x, y)
+function SpatialHash:get_cell_containing_point(x, y)
     return self:get_cell(self:hash(x, y))
 end
 
-function spatialhash:get_objects_in_range(x1,y1, x2,y2)
+
+function SpatialHash:get_objects_in_aabb(x1, y1, x2, y2)
     local objs = {}
 
-    x1,y1 = self:hash(x1,y1)
-    x2,y2 = self:hash(x2,y2)
+    x1, y1 = self:hash(x1, y1)
+    x2, y2 = self:hash(x2, y2)
 
     for x = x1, x2 do
         for y = y1, y2 do
@@ -56,11 +57,10 @@ function spatialhash:get_objects_in_range(x1,y1, x2,y2)
     return objs
 end
 
----
 
-function spatialhash:insert_object(obj, x1,y1, x2,y2)
-    x1,y1 = self:hash(x1,y1)
-    x2,y2 = self:hash(x2,y2)
+function SpatialHash:insert_object(obj, x1,y1, x2,y2)
+    x1, y1 = self:hash(x1, y1)
+    x2, y2 = self:hash(x2, y2)
 
     for x = x1, x2 do
         for y = y1, y2 do
@@ -69,7 +69,8 @@ function spatialhash:insert_object(obj, x1,y1, x2,y2)
     end
 end
 
-function spatialhash:remove_object(obj, x1,y1, x2,y2)
+
+function SpatialHash:remove_object(obj, x1, y1, x2, y2)
     -- No AABB provided - go through all cells.
     if not (x1 and y1 and x2 and y2) then
         for _, row in pairs(self.cells) do
@@ -90,9 +91,8 @@ function spatialhash:remove_object(obj, x1,y1, x2,y2)
     end
 end
 
----
 
-function spatialhash:move_object(obj, old_x1,old_y1, old_x2,old_y2, new_x1,new_y1, new_x2,new_y2)
+function SpatialHash:move_object(obj, old_x1,old_y1, old_x2,old_y2, new_x1,new_y1, new_x2,new_y2)
     old_x1,old_y1 = self:hash(old_x1,old_y1)
     old_x2,old_y2 = self:hash(old_x2,old_y2)
 
@@ -102,8 +102,6 @@ function spatialhash:move_object(obj, old_x1,old_y1, old_x2,old_y2, new_x1,new_y
     if old_x1 == new_x1 and old_y1 == new_y1 and
         old_x2 == new_x2 and old_y2 == new_y2
     then return end
-
-    ---
 
     for x = old_x1, old_x2 do
         for y = old_y1, old_y2 do
@@ -118,14 +116,14 @@ function spatialhash:move_object(obj, old_x1,old_y1, old_x2,old_y2, new_x1,new_y
     end
 end
 
----
 
 local function new(cell_size)
     return setmetatable({
         cell_size = cell_size or 100,
         cells = {}
-    }, spatialhash)
+    }, SpatialHash)
 end
+
 
 return {
     new = new
